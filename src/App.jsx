@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Login from './pages/Login';
 import Alunos from './pages/Alunos';
 import Disciplinas from './pages/Disciplinas';
+import Notas from './pages/Notas';
 
 function App() {
   const [telaAtiva, setTelaAtiva] = useState(() => {
@@ -80,11 +81,21 @@ function App() {
     );
   }
 
+  // Garante que o Aluno nunca caia em telas exclusivas do Admin
+  const telaAtual =
+    usuarioLogado.tipo === 'Aluno' && (telaAtiva === 'alunos' || telaAtiva === 'disciplinas')
+      ? 'notas'
+      : telaAtiva;
+
   return (
     <>
       <input type="checkbox" id="menu" />
       <div className="app">
-        <Sidebar telaAtiva={telaAtiva} setTelaAtiva={setTelaAtiva} />
+        <Sidebar
+          telaAtiva={telaAtual}
+          setTelaAtiva={setTelaAtiva}
+          usuarioLogado={usuarioLogado}
+        />
 
         <main className="main">
           <div className="top">
@@ -98,16 +109,18 @@ function App() {
             </button>
           </div>
 
-          {telaAtiva === 'alunos' && <Alunos alunos={alunos} setAlunos={setAlunos} />}
-          {telaAtiva === 'disciplinas' && (
+          {telaAtual === 'alunos' && <Alunos alunos={alunos} setAlunos={setAlunos} />}
+          {telaAtual === 'disciplinas' && (
             <Disciplinas disciplinas={disciplinas} setDisciplinas={setDisciplinas} />
           )}
-
-          {telaAtiva !== 'alunos' && telaAtiva !== 'disciplinas' && (
-            <div>
-              <h1>Tela: {telaAtiva}</h1>
-              <p className="sub">Vamos criar este componente nos próximos passos.</p>
-            </div>
+          {telaAtual === 'notas' && (
+            <Notas
+              notas={notas}
+              setNotas={setNotas}
+              alunos={alunos}
+              disciplinas={disciplinas}
+              usuarioLogado={usuarioLogado}
+            />
           )}
         </main>
       </div>
