@@ -24,7 +24,7 @@ function Alunos({ alunos, setAlunos }) {
       setMensagem('Erro: Preencha todos os campos obrigatórios (*).');
       return;
     }
-
+    
     const matriculaExiste = alunos.find((a) => a.matricula === matricula.trim());
     if (matriculaExiste) {
       setMensagem('Erro: Já existe um aluno com esta matrícula.');
