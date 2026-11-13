@@ -1,122 +1,162 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import Sidebar from './components/Sidebar';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Alunos from './pages/Alunos';
+import Disciplinas from './pages/Disciplinas';
+import Notas from './pages/Notas';
+import Perfil from './pages/Perfil';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [telaAtiva, setTelaAtiva] = useState(() => {
+    return localStorage.getItem('saber_tela_ativa') || 'dashboard';
+  });
+
+  const [usuarios, setUsuarios] = useState(() => {
+    const salvos = localStorage.getItem('saber_usuarios');
+    return salvos
+      ? JSON.parse(salvos)
+      : [{ id: 1, nome: 'Admin Padrão', email: 'admin@saber.edu.br', senha: '123', tipo: 'Admin' }];
+  });
+
+  const [usuarioLogado, setUsuarioLogado] = useState(() => {
+    const sessao = localStorage.getItem('saber_sessao');
+    return sessao ? JSON.parse(sessao) : null;
+  });
+
+  const [alunos, setAlunos] = useState(() => {
+    const salvos = localStorage.getItem('saber_alunos');
+    return salvos
+      ? JSON.parse(salvos)
+      : [{ id: 1, nome: 'Alexandre Henrique Pereira', email: 'alexandre@saber.edu.br', matricula: '110110', turma: '2º A', situacao: 'Ativo' }];
+  });
+
+  const [disciplinas, setDisciplinas] = useState(() => {
+    const salvas = localStorage.getItem('saber_disciplinas');
+    return salvas
+      ? JSON.parse(salvas)
+      : [
+          { id: 101, codigo: 'MAT-01', nome: 'Matemática', cargaHoraria: 80, situacao: 'Ativa' },
+          { id: 102, codigo: 'POR-01', nome: 'Português', cargaHoraria: 80, situacao: 'Ativa' },
+        ];
+  });
+
+  const [notas, setNotas] = useState(() => {
+    const salvas = localStorage.getItem('saber_notas');
+    return salvas ? JSON.parse(salvas) : [];
+  });
+
+  const [objetivos, setObjetivos] = useState(() => {
+    const salvos = localStorage.getItem('saber_objetivos');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('saber_tela_ativa', telaAtiva);
+  }, [telaAtiva]);
+
+  useEffect(() => {
+    localStorage.setItem('saber_usuarios', JSON.stringify(usuarios));
+  }, [usuarios]);
+
+  useEffect(() => {
+    if (usuarioLogado) localStorage.setItem('saber_sessao', JSON.stringify(usuarioLogado));
+    else localStorage.removeItem('saber_sessao');
+  }, [usuarioLogado]);
+
+  useEffect(() => {
+    localStorage.setItem('saber_alunos', JSON.stringify(alunos));
+  }, [alunos]);
+
+  useEffect(() => {
+    localStorage.setItem('saber_disciplinas', JSON.stringify(disciplinas));
+  }, [disciplinas]);
+
+  useEffect(() => {
+    localStorage.setItem('saber_notas', JSON.stringify(notas));
+  }, [notas]);
+
+  useEffect(() => {
+    localStorage.setItem('saber_objetivos', JSON.stringify(objetivos));
+  }, [objetivos]);
+
+  if (!usuarioLogado) {
+    return (
+      <Login
+        usuarios={usuarios}
+        setUsuarios={setUsuarios}
+        setUsuarioLogado={setUsuarioLogado}
+        alunos={alunos}
+        setAlunos={setAlunos}
+      />
+    );
+  }
+
+  const telaAtual =
+    usuarioLogado.tipo === 'Aluno' && (telaAtiva === 'alunos' || telaAtiva === 'disciplinas')
+      ? 'dashboard'
+      : telaAtiva;
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <input type="checkbox" id="menu" />
+      <div className="app">
+        <Sidebar
+          telaAtiva={telaAtual}
+          setTelaAtiva={setTelaAtiva}
+          usuarioLogado={usuarioLogado}
+        />
 
-      <div className="ticks"></div>
+        <main className="main">
+          <div className="top">
+            <label htmlFor="menu" className="burger">☰</label>
+            <span className="chip">1.º Semestre 2026</span>
+            <span className="user">
+              {usuarioLogado.nome} ({usuarioLogado.tipo})
+            </span>
+            <button className="mini r" onClick={() => setUsuarioLogado(null)}>
+              Sair
+            </button>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+          {telaAtual === 'dashboard' && (
+            <Dashboard
+              alunos={alunos}
+              disciplinas={disciplinas}
+              notas={notas}
+              usuarioLogado={usuarioLogado}
+              setTelaAtiva={setTelaAtiva}
+            />
+          )}
+          {telaAtual === 'alunos' && <Alunos alunos={alunos} setAlunos={setAlunos} />}
+          {telaAtual === 'disciplinas' && (
+            <Disciplinas disciplinas={disciplinas} setDisciplinas={setDisciplinas} />
+          )}
+          {telaAtual === 'notas' && (
+            <Notas
+              notas={notas}
+              setNotas={setNotas}
+              alunos={alunos}
+              disciplinas={disciplinas}
+              usuarioLogado={usuarioLogado}
+            />
+          )}
+          {telaAtual === 'perfil' && (
+            <Perfil
+              usuarioLogado={usuarioLogado}
+              setUsuarioLogado={setUsuarioLogado}
+              usuarios={usuarios}
+              setUsuarios={setUsuarios}
+              alunos={alunos}
+              setAlunos={setAlunos}
+              objetivos={objetivos}
+              setObjetivos={setObjetivos}
+            />
+          )}
+        </main>
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
