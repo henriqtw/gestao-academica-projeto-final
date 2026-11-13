@@ -19,9 +19,6 @@ function Notas({ notas, setNotas, alunos, disciplinas, usuarioLogado }) {
     return { texto: 'Reprovado', classe: 'tag b' };
   };
 
-  // ==========================================
-  // VISÃO DO ALUNO (BOLETIM INDIVIDUAL)
-  // ==========================================
   if (!isAdmin) {
     const alunoAtual = alunos.find(
       (a) =>
@@ -99,9 +96,6 @@ function Notas({ notas, setNotas, alunos, disciplinas, usuarioLogado }) {
     );
   }
 
-  // ==========================================
-  // VISÃO DO ADMIN (LANÇAMENTO E GESTÃO)
-  // ==========================================
   const alunosAtivos = alunos.filter((a) => a.situacao === 'Ativo');
   const disciplinasAtivas = disciplinas.filter((d) => d.situacao === 'Ativa');
 

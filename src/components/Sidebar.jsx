@@ -3,12 +3,16 @@ function Sidebar({ telaAtiva, setTelaAtiva, usuarioLogado }) {
 
   const menus = isAdmin
     ? [
+        { id: 'dashboard', label: 'Início' },
         { id: 'alunos', label: 'Alunos' },
         { id: 'disciplinas', label: 'Disciplinas' },
         { id: 'notas', label: 'Lançar Notas' },
+        { id: 'perfil', label: 'Meu Perfil' },
       ]
     : [
+        { id: 'dashboard', label: 'Início' },
         { id: 'notas', label: 'Meu Boletim' },
+        { id: 'perfil', label: 'Perfil e Objetivos' },
       ];
 
   return (
