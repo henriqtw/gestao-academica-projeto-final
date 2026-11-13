@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 import Alunos from './pages/Alunos';
 import Disciplinas from './pages/Disciplinas';
+import Notas from './pages/Notas';
+import Perfil from './pages/Perfil';
 
 function App() {
   const [telaAtiva, setTelaAtiva] = useState(() => {
-    return localStorage.getItem('saber_tela_ativa') || 'alunos';
+    return localStorage.getItem('saber_tela_ativa') || 'dashboard';
   });
 
   const [usuarios, setUsuarios] = useState(() => {
@@ -43,6 +46,11 @@ function App() {
     return salvas ? JSON.parse(salvas) : [];
   });
 
+  const [objetivos, setObjetivos] = useState(() => {
+    const salvos = localStorage.getItem('saber_objetivos');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem('saber_tela_ativa', telaAtiva);
   }, [telaAtiva]);
@@ -68,6 +76,10 @@ function App() {
     localStorage.setItem('saber_notas', JSON.stringify(notas));
   }, [notas]);
 
+  useEffect(() => {
+    localStorage.setItem('saber_objetivos', JSON.stringify(objetivos));
+  }, [objetivos]);
+
   if (!usuarioLogado) {
     return (
       <Login
@@ -80,11 +92,20 @@ function App() {
     );
   }
 
+  const telaAtual =
+    usuarioLogado.tipo === 'Aluno' && (telaAtiva === 'alunos' || telaAtiva === 'disciplinas')
+      ? 'dashboard'
+      : telaAtiva;
+
   return (
     <>
       <input type="checkbox" id="menu" />
       <div className="app">
-        <Sidebar telaAtiva={telaAtiva} setTelaAtiva={setTelaAtiva} />
+        <Sidebar
+          telaAtiva={telaAtual}
+          setTelaAtiva={setTelaAtiva}
+          usuarioLogado={usuarioLogado}
+        />
 
         <main className="main">
           <div className="top">
@@ -98,16 +119,39 @@ function App() {
             </button>
           </div>
 
-          {telaAtiva === 'alunos' && <Alunos alunos={alunos} setAlunos={setAlunos} />}
-          {telaAtiva === 'disciplinas' && (
+          {telaAtual === 'dashboard' && (
+            <Dashboard
+              alunos={alunos}
+              disciplinas={disciplinas}
+              notas={notas}
+              usuarioLogado={usuarioLogado}
+              setTelaAtiva={setTelaAtiva}
+            />
+          )}
+          {telaAtual === 'alunos' && <Alunos alunos={alunos} setAlunos={setAlunos} />}
+          {telaAtual === 'disciplinas' && (
             <Disciplinas disciplinas={disciplinas} setDisciplinas={setDisciplinas} />
           )}
-
-          {telaAtiva !== 'alunos' && telaAtiva !== 'disciplinas' && (
-            <div>
-              <h1>Tela: {telaAtiva}</h1>
-              <p className="sub">Vamos criar este componente nos próximos passos.</p>
-            </div>
+          {telaAtual === 'notas' && (
+            <Notas
+              notas={notas}
+              setNotas={setNotas}
+              alunos={alunos}
+              disciplinas={disciplinas}
+              usuarioLogado={usuarioLogado}
+            />
+          )}
+          {telaAtual === 'perfil' && (
+            <Perfil
+              usuarioLogado={usuarioLogado}
+              setUsuarioLogado={setUsuarioLogado}
+              usuarios={usuarios}
+              setUsuarios={setUsuarios}
+              alunos={alunos}
+              setAlunos={setAlunos}
+              objetivos={objetivos}
+              setObjetivos={setObjetivos}
+            />
           )}
         </main>
       </div>
