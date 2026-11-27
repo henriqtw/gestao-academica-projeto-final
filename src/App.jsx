@@ -281,6 +281,10 @@ function App() {
               setUsuarioLogado={setUsuarioLogado}
               usuarios={usuarios}
               setUsuarios={setUsuarios}
+              alunos={alunos}
+              setAlunos={setAlunos}
+              disciplinas={disciplinas}
+              notas={notas}
               semestre={semestre}
               setSemestre={setSemestre}
             />
