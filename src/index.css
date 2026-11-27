@@ -33,6 +33,7 @@ td{padding:11px 10px;border-bottom:1px solid var(--line)}
 .wrap{overflow-x:auto}
 .tag{padding:3px 12px;border-radius:999px;font-size:11px;font-weight:800;background:var(--ok)}
 .tag.w{background:var(--warn)}.tag.b{background:var(--bad);color:#fff}
+.tag.r {  background: #fee2e2;  color: #b91c1c;}
 .mini{border:0;border-radius:6px;padding:6px 10px;font-weight:700;font-size:12px;cursor:pointer;background:var(--sky);color:var(--navy)}
 .mini.r{background:var(--bad);color:#fff}
 label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px}
