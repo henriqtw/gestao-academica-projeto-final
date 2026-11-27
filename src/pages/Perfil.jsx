@@ -7,263 +7,150 @@ function Perfil({
   setUsuarios,
   alunos,
   setAlunos,
-  objetivos,
-  setObjetivos,
+  semestre,
+  setSemestre,
 }) {
   const isAdmin = usuarioLogado?.tipo === 'Admin';
+  const [editando, setEditando] = useState(false);
 
   const [nome, setNome] = useState(usuarioLogado?.nome || '');
-  const [novaSenha, setNovaSenha] = useState('');
+  const [email, setEmail] = useState(usuarioLogado?.email || '');
+  const [telefone, setTelefone] = useState(usuarioLogado?.telefone || '(11) 12345-6789');
+  const [nascimento, setNascimento] = useState(usuarioLogado?.nascimento || '14/10/2009');
   const [mensagem, setMensagem] = useState('');
-
-  const [tituloObjetivo, setTituloObjetivo] = useState('');
-  const [prazoObjetivo, setPrazoObjetivo] = useState('');
 
   const alunoAtual = !isAdmin
     ? alunos.find(
         (a) =>
           a.id === usuarioLogado.id ||
-          (usuarioLogado.matricula && a.matricula === usuarioLogado.matricula) ||
-          a.email.toLowerCase() === usuarioLogado.email.toLowerCase()
+          (usuarioLogado.matricula && a.matricula === usuarioLogado.matricula)
       )
     : null;
 
-  const handleSalvarPerfil = (e) => {
+  const iniciais = nome
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0].toUpperCase())
+    .join('');
+
+  const handleSalvar = (e) => {
     e.preventDefault();
+    if (!nome.trim() || !email.trim()) return;
 
-    if (!nome.trim()) {
-      setMensagem('Erro: O nome não pode ficar em branco.');
-      return;
-    }
-
-    const usuariosAtualizados = usuarios.map((u) => {
-      if (u.id === usuarioLogado.id) {
-        return {
-          ...u,
-          nome: nome.trim(),
-          senha: novaSenha.trim() ? novaSenha.trim() : u.senha,
-        };
-      }
-      return u;
-    });
-
-    setUsuarios(usuariosAtualizados);
-
-    const sessaoAtualizada = {
+    const atualizado = {
       ...usuarioLogado,
       nome: nome.trim(),
-      senha: novaSenha.trim() ? novaSenha.trim() : usuarioLogado.senha,
+      email: email.trim(),
+      telefone: telefone.trim(),
+      nascimento: nascimento.trim(),
     };
-    setUsuarioLogado(sessaoAtualizada);
+
+    setUsuarioLogado(atualizado);
+    setUsuarios(usuarios.map((u) => (u.id === usuarioLogado.id ? atualizado : u)));
 
     if (!isAdmin) {
       setAlunos(
         alunos.map((a) =>
-          a.id === usuarioLogado.id ||
-          (usuarioLogado.matricula && a.matricula === usuarioLogado.matricula) ||
-          a.email.toLowerCase() === usuarioLogado.email.toLowerCase()
-            ? { ...a, nome: nome.trim() }
+          a.id === usuarioLogado.id
+            ? { ...a, nome: nome.trim(), email: email.trim(), telefone: telefone.trim(), nascimento: nascimento.trim() }
             : a
         )
       );
     }
 
-    setNovaSenha('');
-    setMensagem('Dados atualizados com sucesso!');
+    setEditando(false);
+    setMensagem('Informações atualizadas com sucesso!');
   };
-
-  const handleAdicionarObjetivo = (e) => {
-    e.preventDefault();
-
-    if (!tituloObjetivo.trim()) {
-      setMensagem('Erro: Descreva o objetivo antes de adicionar.');
-      return;
-    }
-
-    const novoObjetivo = {
-      id: Date.now(),
-      usuarioId: usuarioLogado.id,
-      titulo: tituloObjetivo.trim(),
-      prazo: prazoObjetivo || 'Sem prazo',
-      concluido: false,
-    };
-
-    setObjetivos([...objetivos, novoObjetivo]);
-    setTituloObjetivo('');
-    setPrazoObjetivo('');
-    setMensagem('Objetivo adicionado!');
-  };
-
-  const alternarConclusao = (id) => {
-    setObjetivos(
-      objetivos.map((obj) =>
-        obj.id === id ? { ...obj, concluido: !obj.concluido } : obj
-      )
-    );
-  };
-
-  const excluirObjetivo = (id) => {
-    setObjetivos(objetivos.filter((obj) => obj.id !== id));
-  };
-
-  const meusObjetivos = objetivos.filter((obj) => obj.usuarioId === usuarioLogado.id);
 
   return (
     <>
-      <h1>{isAdmin ? 'Meu Perfil' : 'Perfil e Objetivos'}</h1>
-      <p className="sub">
-        Gerencie suas informações de acesso e acompanhe suas metas do semestre.
-      </p>
+      <div className="sub-top-bar">
+        <div>
+          <h1>Meu perfil</h1>
+          <p className="sub">Gerencie suas informações</p>
+        </div>
+        <select className="semester-select" value={semestre} onChange={(e) => setSemestre(e.target.value)}>
+          <option value="1º Semestre (2026)">1º Semestre (2026)</option>
+          <option value="2º Semestre (2026)">2º Semestre (2026)</option>
+        </select>
+      </div>
 
       {mensagem && (
-        <p
-          style={{
-            color: mensagem.startsWith('Erro') ? 'crimson' : 'green',
-            fontWeight: 'bold',
-            marginBottom: '12px',
-          }}
-        >
-          {mensagem}
-        </p>
+        <p style={{ color: '#16a34a', fontWeight: 'bold', marginBottom: '12px' }}>{mensagem}</p>
       )}
 
-      <form className="card" onSubmit={handleSalvarPerfil}>
-        <h3>Dados da Conta</h3>
-        <div className="row">
-          <div>
-            <label>Nome Completo *</label>
-            <input
-              type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-            />
+      {editando ? (
+        <form className="card" onSubmit={handleSalvar}>
+          <h3>Editar informações do perfil</h3>
+          <div className="row">
+            <div>
+              <label>Nome completo *</label>
+              <input value={nome} onChange={(e) => setNome(e.target.value)} />
+            </div>
+            <div>
+              <label>Data de nascimento</label>
+              <input value={nascimento} onChange={(e) => setNascimento(e.target.value)} />
+            </div>
+          </div>
+          <div className="row">
+            <div>
+              <label>E-mail *</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div>
+              <label>Telefone</label>
+              <input value={telefone} onChange={(e) => setTelefone(e.target.value)} />
+            </div>
+          </div>
+          <div className="acts">
+            <button type="button" className="btn ghost" onClick={() => setEditando(false)}>
+              Cancelar
+            </button>
+            <button type="submit" className="btn">
+              Salvar Perfil
+            </button>
+          </div>
+        </form>
+      ) : (
+        <>
+          <div className="profile-hero">
+            <button className="edit-fab" title="Editar perfil" onClick={() => setEditando(true)}>
+              ✏️
+            </button>
+            <div className="avatar-lg">{iniciais || 'US'}</div>
+            <div>
+              <h2 style={{ fontSize: '26px', marginBottom: '6px' }}>{usuarioLogado.nome}</h2>
+              <p style={{ fontSize: '16px', color: '#1e293b', marginBottom: '4px' }}>{nascimento}</p>
+              <p style={{ fontSize: '15px', color: '#334155', fontWeight: 600 }}>
+                {isAdmin
+                  ? 'Administrador Institucional'
+                  : `${alunoAtual?.turma || usuarioLogado.turma || 'Turma'} · RA ${alunoAtual?.matricula || usuarioLogado.matricula || '-'}`}
+              </p>
+            </div>
           </div>
 
-          <div>
-            <label>E-mail de Acesso</label>
-            <input type="email" value={usuarioLogado.email} disabled />
-          </div>
-        </div>
-
-        <div className="row">
-          <div>
-            <label>Perfil / Vínculo</label>
-            <input
-              type="text"
-              value={
-                isAdmin
-                  ? 'Administrador'
-                  : `Aluno — Matrícula: ${alunoAtual?.matricula || usuarioLogado.matricula || '-'} (${alunoAtual?.turma || usuarioLogado.turma || '-'})`
-              }
-              disabled
-            />
+          <div className="info-strip">
+            <div>
+              <small style={{ color: '#334155', fontSize: '14px', display: 'block' }}>E-mail</small>
+              <strong style={{ fontSize: '20px' }}>{usuarioLogado.email}</strong>
+            </div>
+            <button className="mini icon-btn" onClick={() => setEditando(true)}>
+              📝
+            </button>
           </div>
 
-          <div>
-            <label>Nova Senha (deixe em branco para manter a atual)</label>
-            <input
-              type="password"
-              value={novaSenha}
-              onChange={(e) => setNovaSenha(e.target.value)}
-              placeholder="Digite uma nova senha..."
-            />
+          <div className="info-strip">
+            <div>
+              <small style={{ color: '#334155', fontSize: '14px', display: 'block' }}>Telefone</small>
+              <strong style={{ fontSize: '20px' }}>{telefone}</strong>
+            </div>
+            <button className="mini icon-btn" onClick={() => setEditando(true)}>
+              📝
+            </button>
           </div>
-        </div>
-
-        <div className="acts">
-          <button type="submit" className="btn">
-            Salvar Alterações
-          </button>
-        </div>
-      </form>
-
-      <form className="card" style={{ marginTop: '20px' }} onSubmit={handleAdicionarObjetivo}>
-        <h3>{isAdmin ? 'Metas Administrativas' : 'Meus Objetivos Acadêmicos'}</h3>
-        <div className="row">
-          <div>
-            <label>Descrição da Meta *</label>
-            <input
-              type="text"
-              value={tituloObjetivo}
-              onChange={(e) => setTituloObjetivo(e.target.value)}
-              placeholder={
-                isAdmin
-                  ? 'Ex.: Fechar lançamentos do 1º bimestre'
-                  : 'Ex.: Alcançar média 8,5 em Matemática'
-              }
-            />
-          </div>
-
-          <div>
-            <label>Prazo / Etapa</label>
-            <input
-              type="text"
-              value={prazoObjetivo}
-              onChange={(e) => setPrazoObjetivo(e.target.value)}
-              placeholder="Ex.: Fim do 2º Bimestre"
-            />
-          </div>
-        </div>
-
-        <div className="acts">
-          <button type="submit" className="btn">
-            Adicionar Objetivo
-          </button>
-        </div>
-      </form>
-
-      <div className="card wrap" style={{ marginTop: '20px' }}>
-        <table>
-          <thead>
-            <tr>
-              <th>Objetivo</th>
-              <th>Prazo</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {meusObjetivos.length === 0 ? (
-              <tr>
-                <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
-                  Nenhum objetivo cadastrado ainda.
-                </td>
-              </tr>
-            ) : (
-              meusObjetivos.map((obj) => (
-                <tr key={obj.id}>
-                  <td
-                    style={{
-                      textDecoration: obj.concluido ? 'line-through' : 'none',
-                      opacity: obj.concluido ? 0.7 : 1,
-                    }}
-                  >
-                    {obj.titulo}
-                  </td>
-                  <td>{obj.prazo}</td>
-                  <td>
-                    <span className={obj.concluido ? 'tag' : 'tag b'}>
-                      {obj.concluido ? 'Concluído' : 'Em andamento'}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      className="mini"
-                      style={{ marginRight: '6px' }}
-                      onClick={() => alternarConclusao(obj.id)}
-                    >
-                      {obj.concluido ? 'Reabrir' : 'Concluir'}
-                    </button>
-                    <button className="mini r" onClick={() => excluirObjetivo(obj.id)}>
-                      Excluir
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+        </>
+      )}
     </>
   );
 }
