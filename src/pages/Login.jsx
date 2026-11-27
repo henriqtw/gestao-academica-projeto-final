@@ -48,7 +48,10 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
     }
 
     if (modo === 'admin') {
-      setUsuarios([...usuarios, { id: Date.now(), nome: nome.trim(), email: email.trim(), senha, tipo: 'Admin' }]);
+      setUsuarios([
+        ...usuarios,
+        { id: Date.now(), nome: nome.trim(), email: email.trim(), senha, tipo: 'Admin' },
+      ]);
       trocarModo('login');
       setMensagem('Admin cadastrado! Faça login para entrar.');
       return;
@@ -60,10 +63,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
         return;
       }
       const novoId = Date.now();
-<<<<<<< Updated upstream
-      setUsuarios([...usuarios, { id: novoId, nome: nome.trim(), email: email.trim(), senha, tipo: 'Aluno', matricula: matricula.trim(), turma }]);
-      setAlunos([...alunos, { id: novoId, nome: nome.trim(), email: email.trim(), matricula: matricula.trim(), turma, situacao: 'Ativo' }]);
-=======
       setUsuarios([
         ...usuarios,
         {
@@ -88,7 +87,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
           frequencia: 100,
         },
       ]);
->>>>>>> Stashed changes
       trocarModo('login');
       setMensagem('Aluno cadastrado! Faça login para entrar.');
     }
@@ -104,10 +102,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
             style={{ width: '230px', maxWidth: '100%', height: 'auto' }}
           />
           <h2>SEU FUTURO COMEÇA AQUI.</h2>
-<<<<<<< Updated upstream
-          <p>Acompanhe seu desempenho, consulte suas notas e fique por dentro de todas as suas informações acadêmicas em um só lugar.</p>
-          <span className="btn" style={{ background: '#2f6df0' }}>Educação que conecta resultados</span>
-=======
           <p>
             Acompanhe seu desempenho, consulte suas notas e fique por dentro de
             todas as suas informações acadêmicas em um só lugar.
@@ -115,7 +109,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
           <span className="btn" style={{ background: '#2f6df0', alignSelf: 'flex-start' }}>
             Educação que conecta resultados
           </span>
->>>>>>> Stashed changes
         </section>
 
         <form className="form" onSubmit={handleSubmit}>
@@ -126,11 +119,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
           />
 
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-<<<<<<< Updated upstream
-            <button type="button" className={`btn ${modo === 'login' ? '' : 'ghost'}`} onClick={() => trocarModo('login')}>Entrar</button>
-            <button type="button" className={`btn ${modo === 'admin' ? '' : 'ghost'}`} onClick={() => trocarModo('admin')}>+ Admin</button>
-            <button type="button" className={`btn ${modo === 'aluno' ? '' : 'ghost'}`} onClick={() => trocarModo('aluno')}>+ Aluno</button>
-=======
             <button
               type="button"
               className={`btn ${modo === 'login' ? '' : 'ghost'}`}
@@ -155,7 +143,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
             >
               + Aluno
             </button>
->>>>>>> Stashed changes
           </div>
 
           <h2 style={{ textAlign: 'center', color: 'var(--navy)' }}>
@@ -163,12 +150,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
             {modo === 'admin' && 'Cadastro de Admin'}
             {modo === 'aluno' && 'Cadastro de Aluno'}
           </h2>
-<<<<<<< Updated upstream
-          <p className="sub">{modo === 'login' ? 'Entre com suas credenciais institucionais.' : 'Preencha os dados para criar um novo acesso.'}</p>
-
-          {mensagem && (
-            <p style={{ color: mensagem.startsWith('Erro') ? 'crimson' : 'green', fontSize: '13px', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
-=======
           <p className="sub" style={{ textAlign: 'center', marginBottom: '14px' }}>
             {modo === 'login'
               ? 'Entre com suas credenciais institucionais.'
@@ -185,7 +166,6 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
                 marginBottom: '10px',
               }}
             >
->>>>>>> Stashed changes
               {mensagem}
             </p>
           )}
@@ -193,27 +173,31 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
           {modo !== 'login' && (
             <>
               <label>Nome completo *</label>
-              <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Digite o nome completo" />
+              <input
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="Digite o nome completo"
+              />
             </>
           )}
 
           <label>E-mail institucional *</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nome@saber.edu.br" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="nome@saber.edu.br"
+          />
 
           {modo === 'aluno' && (
             <div className="row">
               <div>
-<<<<<<< Updated upstream
-                <label>Matrícula *</label>
-                <input value={matricula} onChange={(e) => setMatricula(e.target.value)} placeholder="Ex.: 202601" />
-=======
                 <label>RA / Matrícula *</label>
                 <input
                   value={matricula}
                   onChange={(e) => setMatricula(e.target.value)}
                   placeholder="Ex.: 202601"
                 />
->>>>>>> Stashed changes
               </div>
               <div>
                 <label>Turma *</label>
@@ -229,7 +213,12 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
           )}
 
           <label>Senha *</label>
-          <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} placeholder="Digite sua senha" />
+          <input
+            type="password"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            placeholder="Digite sua senha"
+          />
 
           <button className="btn" type="submit" style={{ marginTop: '20px', width: '100%' }}>
             {modo === 'login' ? 'Entrar' : 'Concluir Cadastro'}
