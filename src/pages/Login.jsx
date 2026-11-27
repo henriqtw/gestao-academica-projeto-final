@@ -56,12 +56,39 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
 
     if (modo === 'aluno') {
       if (!matricula.trim() || !turma) {
-        setMensagem('Erro: Preencha matrícula e turma.');
+        setMensagem('Erro: Preencha RA/matrícula e turma.');
         return;
       }
       const novoId = Date.now();
+<<<<<<< Updated upstream
       setUsuarios([...usuarios, { id: novoId, nome: nome.trim(), email: email.trim(), senha, tipo: 'Aluno', matricula: matricula.trim(), turma }]);
       setAlunos([...alunos, { id: novoId, nome: nome.trim(), email: email.trim(), matricula: matricula.trim(), turma, situacao: 'Ativo' }]);
+=======
+      setUsuarios([
+        ...usuarios,
+        {
+          id: novoId,
+          nome: nome.trim(),
+          email: email.trim(),
+          senha,
+          tipo: 'Aluno',
+          matricula: matricula.trim(),
+          turma,
+        },
+      ]);
+      setAlunos([
+        ...alunos,
+        {
+          id: novoId,
+          nome: nome.trim(),
+          email: email.trim(),
+          matricula: matricula.trim(),
+          turma,
+          situacao: 'Ativo',
+          frequencia: 100,
+        },
+      ]);
+>>>>>>> Stashed changes
       trocarModo('login');
       setMensagem('Aluno cadastrado! Faça login para entrar.');
     }
@@ -71,28 +98,94 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
     <div className="login">
       <div className="lbox">
         <section className="hero">
-          <div style={{ fontSize: '30px', fontWeight: 800 }}>SABER</div>
+          <img
+            src="/marca-saber.png"
+            alt="SABER - Sistema Acadêmico"
+            style={{ width: '230px', maxWidth: '100%', height: 'auto' }}
+          />
           <h2>SEU FUTURO COMEÇA AQUI.</h2>
+<<<<<<< Updated upstream
           <p>Acompanhe seu desempenho, consulte suas notas e fique por dentro de todas as suas informações acadêmicas em um só lugar.</p>
           <span className="btn" style={{ background: '#2f6df0' }}>Educação que conecta resultados</span>
+=======
+          <p>
+            Acompanhe seu desempenho, consulte suas notas e fique por dentro de
+            todas as suas informações acadêmicas em um só lugar.
+          </p>
+          <span className="btn" style={{ background: '#2f6df0', alignSelf: 'flex-start' }}>
+            Educação que conecta resultados
+          </span>
+>>>>>>> Stashed changes
         </section>
 
         <form className="form" onSubmit={handleSubmit}>
+          <img
+            src="/simbolo-saber.png"
+            alt="Símbolo SABER"
+            style={{ width: '54px', margin: '0 auto 12px', display: 'block' }}
+          />
+
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+<<<<<<< Updated upstream
             <button type="button" className={`btn ${modo === 'login' ? '' : 'ghost'}`} onClick={() => trocarModo('login')}>Entrar</button>
             <button type="button" className={`btn ${modo === 'admin' ? '' : 'ghost'}`} onClick={() => trocarModo('admin')}>+ Admin</button>
             <button type="button" className={`btn ${modo === 'aluno' ? '' : 'ghost'}`} onClick={() => trocarModo('aluno')}>+ Aluno</button>
+=======
+            <button
+              type="button"
+              className={`btn ${modo === 'login' ? '' : 'ghost'}`}
+              style={{ flex: 1 }}
+              onClick={() => trocarModo('login')}
+            >
+              Entrar
+            </button>
+            <button
+              type="button"
+              className={`btn ${modo === 'admin' ? '' : 'ghost'}`}
+              style={{ flex: 1 }}
+              onClick={() => trocarModo('admin')}
+            >
+              + Admin
+            </button>
+            <button
+              type="button"
+              className={`btn ${modo === 'aluno' ? '' : 'ghost'}`}
+              style={{ flex: 1 }}
+              onClick={() => trocarModo('aluno')}
+            >
+              + Aluno
+            </button>
+>>>>>>> Stashed changes
           </div>
 
-          <h2>
+          <h2 style={{ textAlign: 'center', color: 'var(--navy)' }}>
             {modo === 'login' && 'Acesse sua conta'}
             {modo === 'admin' && 'Cadastro de Admin'}
             {modo === 'aluno' && 'Cadastro de Aluno'}
           </h2>
+<<<<<<< Updated upstream
           <p className="sub">{modo === 'login' ? 'Entre com suas credenciais institucionais.' : 'Preencha os dados para criar um novo acesso.'}</p>
 
           {mensagem && (
             <p style={{ color: mensagem.startsWith('Erro') ? 'crimson' : 'green', fontSize: '13px', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+=======
+          <p className="sub" style={{ textAlign: 'center', marginBottom: '14px' }}>
+            {modo === 'login'
+              ? 'Entre com suas credenciais institucionais.'
+              : 'Preencha os dados para criar um novo acesso.'}
+          </p>
+
+          {mensagem && (
+            <p
+              style={{
+                color: mensagem.startsWith('Erro') ? 'crimson' : '#16a34a',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                marginBottom: '10px',
+              }}
+            >
+>>>>>>> Stashed changes
               {mensagem}
             </p>
           )}
@@ -110,8 +203,17 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
           {modo === 'aluno' && (
             <div className="row">
               <div>
+<<<<<<< Updated upstream
                 <label>Matrícula *</label>
                 <input value={matricula} onChange={(e) => setMatricula(e.target.value)} placeholder="Ex.: 202601" />
+=======
+                <label>RA / Matrícula *</label>
+                <input
+                  value={matricula}
+                  onChange={(e) => setMatricula(e.target.value)}
+                  placeholder="Ex.: 202601"
+                />
+>>>>>>> Stashed changes
               </div>
               <div>
                 <label>Turma *</label>
@@ -120,6 +222,7 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
                   <option value="1º A">1º A</option>
                   <option value="2º A">2º A</option>
                   <option value="3º A">3º A</option>
+                  <option value="DEV2_SESI">DEV2_SESI</option>
                 </select>
               </div>
             </div>
@@ -128,7 +231,7 @@ function Login({ usuarios, setUsuarios, setUsuarioLogado, alunos, setAlunos }) {
           <label>Senha *</label>
           <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} placeholder="Digite sua senha" />
 
-          <button className="btn" type="submit" style={{ marginTop: '20px' }}>
+          <button className="btn" type="submit" style={{ marginTop: '20px', width: '100%' }}>
             {modo === 'login' ? 'Entrar' : 'Concluir Cadastro'}
           </button>
         </form>
